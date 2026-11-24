@@ -344,3 +344,83 @@ Se comprendió la importancia de los acumuladores para sumar información, los c
 También se implementó el manejo de casos borde, evitando errores cuando el arreglo de ventas está vacío.
 
 Finalmente, se realizaron pruebas con diferentes tamaños de arreglos y verificaciones manuales mediante tablas de traza para comprobar la lógica de los ciclos.
+
+Análisis de las funciones implementadas
+
+Durante el desarrollo del proyecto Café Origen Analítica se implementaron diferentes funciones para analizar la información de las ventas. Para comprender su funcionamiento, se identificaron los elementos que se recorren, filtran, transforman, acumulan y agrupan en cada operación.
+
+1. Función totalVendido()
+¿Qué recorro? Recorro todos los registros de ventas.
+¿Qué filtro? No filtro ningún registro, porque necesito tener en cuenta todas las ventas.
+¿Qué transformo? Multiplico la cantidad de productos vendidos por su precio para obtener el valor de cada venta.
+¿Qué acumulo? Acumulo el valor de todas las ventas para calcular el total vendido.
+¿Cómo agrupo? No realizo agrupaciones, porque necesito obtener un único resultado general.
+2. Función unidadesVendidas()
+¿Qué recorro? Recorro todos los registros de ventas.
+¿Qué filtro? No aplico filtros.
+¿Qué transformo? Tomo la cantidad de unidades registradas en cada venta.
+¿Qué acumulo? Sumo las cantidades para conocer el total de unidades vendidas.
+¿Cómo agrupo? No agrupo los datos; obtengo un total general.
+3. Función ventasPorCiudad()
+¿Qué recorro? Recorro todos los registros de ventas.
+¿Qué filtro? Selecciono únicamente las ventas que pertenecen a la ciudad indicada.
+¿Qué transformo? Comparo los nombres de las ciudades convirtiéndolos a minúsculas para evitar diferencias entre mayúsculas y minúsculas.
+¿Qué acumulo? Sumo el valor de las ventas correspondientes a la ciudad seleccionada.
+¿Cómo agrupo? Agrupo las ventas de manera lógica según la ciudad que estoy consultando.
+4. Función ventaMayor()
+¿Qué recorro? Recorro todos los registros de ventas.
+¿Qué filtro? No aplico un filtro específico.
+¿Qué transformo? Calculo el valor de cada venta multiplicando cantidad por precio.
+¿Qué acumulo? No realizo una suma; conservo el registro que tenga el mayor valor.
+¿Cómo agrupo? No realizo agrupaciones. Identifico la venta individual de mayor valor.
+5. Función ticketPromedio()
+¿Qué recorro? Recorro todos los registros de ventas.
+¿Qué filtro? No aplico filtros.
+¿Qué transformo? Calculo el valor de cada venta.
+¿Qué acumulo? Acumulo los valores de las ventas y cuento la cantidad de registros.
+¿Cómo agrupo? No agrupo los registros. Divido el valor acumulado entre el número de ventas para obtener el promedio.
+6. Función totalVendidoM()
+¿Qué recorro? Recorro todos los registros del arreglo de ventas utilizando el método reduce().
+¿Qué filtro? No filtro registros.
+¿Qué transformo? Multiplico la cantidad por el precio de cada producto.
+¿Qué acumulo? Acumulo el valor de todas las ventas en un único resultado.
+¿Cómo agrupo? No realizo agrupaciones; obtengo el total general utilizando reduce().
+7. Función unidadesVendidasM()
+¿Qué recorro? Recorro todos los registros de ventas utilizando reduce().
+¿Qué filtro? No aplico filtros.
+¿Qué transformo? Extraigo la cantidad de unidades de cada registro.
+¿Qué acumulo? Sumo todas las unidades vendidas.
+¿Cómo agrupo? No agrupo; obtengo una suma general.
+8. Función ventasPorCiudadM()
+¿Qué recorro? Recorro el arreglo de ventas mediante los métodos filter() y reduce().
+¿Qué filtro? Selecciono las ventas que corresponden a la ciudad indicada.
+¿Qué transformo? Normalizo el nombre de la ciudad utilizando trim() y toLowerCase() para facilitar la comparación.
+¿Qué acumulo? Sumo el valor de las ventas que cumplen la condición.
+¿Cómo agrupo? Reúno las ventas correspondientes a una ciudad específica para calcular su valor total.
+9. Función totalPorCiudad()
+¿Qué recorro? Recorro todos los registros de ventas utilizando reduce().
+¿Qué filtro? No elimino registros; proceso todas las ventas.
+¿Qué transformo? Obtengo el nombre de la ciudad y calculo el valor de cada venta.
+¿Qué acumulo? Acumulo el valor vendido correspondiente a cada ciudad.
+¿Cómo agrupo? Agrupo las ventas utilizando la ciudad como categoría, creando un objeto con el total vendido por cada una.
+10. Función unidadesPorProducto()
+¿Qué recorro? Recorro todos los registros de ventas.
+¿Qué filtro? No aplico filtros.
+¿Qué transformo? Extraigo el nombre del producto y la cantidad vendida.
+¿Qué acumulo? Sumo las unidades vendidas de cada producto.
+¿Cómo agrupo? Agrupo los registros por nombre del producto para conocer cuántas unidades se vendieron de cada uno.
+11. Función topProductosPorValor()
+¿Qué recorro? Recorro todos los registros de ventas utilizando reduce().
+¿Qué filtro? No filtro inicialmente; proceso todos los productos.
+¿Qué transformo? Calculo el valor de cada venta y convierto el objeto de resultados en un arreglo de productos con sus respectivos totales.
+¿Qué acumulo? Acumulo el valor vendido por cada producto.
+¿Cómo agrupo? Agrupo las ventas por producto, ordeno los resultados de mayor a menor valor y selecciono los primeros productos mediante sort() y slice().
+Reflexión final
+
+Durante esta actividad comprendí que analizar datos no consiste solamente en recorrer registros, sino también en saber qué información necesito seleccionar, transformar y acumular para obtener resultados útiles.
+
+Aprendí a utilizar ciclos tradicionales como for y métodos de arreglos como reduce(), filter(), map() y sort() para desarrollar indicadores de ventas.
+
+También comprendí la importancia de agrupar la información por categorías como ciudades y productos, porque esto permite identificar cuáles son las ciudades con mayores ventas y cuáles son los productos que generan más ingresos.
+
+Finalmente, aprendí que los datos deben revisarse antes de realizar los cálculos, ya que un registro incompleto, como una venta sin precio, puede afectar los resultados del análisis.
