@@ -1,39 +1,59 @@
+// ============================================================
+// ANALÍTICA - CAFÉ ORIGEN
+// Funciones para calcular y organizar la información de ventas.
+// ============================================================
 
-
+// Devuelve el valor de una venta.
+// Si el precio no está registrado, devuelve null para no confundir
+// un dato desconocido con una venta de valor cero.
 function valorVenta(venta) {
-    return venta.cantidad * (Number(venta.precio) || 0);
+    if (venta.precio === undefined || venta.precio === null || venta.precio === "") {
+        return null;
+    }
+
+    const precio = Number(venta.precio);
+
+    if (!Number.isFinite(precio)) {
+        return null;
+    }
+
+    return venta.cantidad * precio;
 }
 
-
+// TOTAL VENDIDO (CICLO)
 function totalVendido(ventas) {
     let total = 0;
 
     for (const venta of ventas) {
-        total += valorVenta(venta);
+        const valor = valorVenta(venta);
+
+        if (valor !== null) {
+            total += valor;
+        }
     }
 
     return total;
 }
 
-
-function unidadesVendidas(ventas){
+// UNIDADES VENDIDAS (CICLO)
+function unidadesVendidas(ventas) {
     let total = 0;
-    for (const venta of ventas){
-        let resultado =  venta.cantidad;
-        total += resultado;
-    }
-    return total
-}
-
-function ventaMayor(ventas) {
-    if (ventas.length === 0) {
-        return null;
-    }
-
-    let mayor = ventas[0];
 
     for (const venta of ventas) {
-        if (valorVenta(venta) > valorVenta(mayor)) {
+        total += Number(venta.cantidad) || 0;
+    }
+
+    return total;
+}
+
+// VENTA DE MAYOR VALOR (CICLO)
+function ventaMayor(ventas) {
+    let mayor = null;
+
+    for (const venta of ventas) {
+        const valorActual = valorVenta(venta);
+
+        if (valorActual !== null && (mayor === null || valorActual > valorVenta(mayor))) {
             mayor = venta;
         }
     }
@@ -41,115 +61,123 @@ function ventaMayor(ventas) {
     return mayor;
 }
 
+// TICKET PROMEDIO (CICLO)
+// Solo considera registros que tienen un precio válido.
 function ticketPromedio(ventas) {
-    if (ventas.length === 0) {
-        return 0;
-    }
-
     let acumulador = 0;
     let contador = 0;
 
     for (const venta of ventas) {
-        acumulador += valorVenta(venta);
-        contador++;
+        const valor = valorVenta(venta);
+
+        if (valor !== null) {
+            acumulador += valor;
+            contador++;
+        }
+    }
+
+    if (contador === 0) {
+        return 0;
     }
 
     return acumulador / contador;
 }
 
-function ventasPorCiudad(ventas, ciudad) { 
+// VENTAS POR CIUDAD (CICLO)
+function ventasPorCiudad(ventas, ciudad) {
     let total = 0;
-
-    let ciudadBuscada = ciudad.trim().toLowerCase();
+    const ciudadBuscada = ciudad.trim().toLowerCase();
 
     for (const venta of ventas) {
-        let ciudadActual = venta.ciudad.trim().toLowerCase();
+        const ciudadActual = venta.ciudad.trim().toLowerCase();
+        const valor = valorVenta(venta);
 
-        if (ciudadActual === ciudadBuscada) {
-            total += valorVenta(venta);
+        if (ciudadActual === ciudadBuscada && valor !== null) {
+            total += valor;
         }
     }
 
     return total;
 }
 
+// ============================================================
+// INDICADORES CON MÉTODOS DE ARREGLO
+// ============================================================
+
+// TOTAL VENDIDO (REDUCE)
 function totalVendidoM(ventas) {
     return ventas.reduce((total, venta) => {
-        return total + (venta.cantidad * venta.precio);
+        const valor = valorVenta(venta);
+        return valor === null ? total : total + valor;
     }, 0);
 }
 
+// UNIDADES VENDIDAS (REDUCE)
 function unidadesVendidasM(ventas) {
     return ventas.reduce((total, venta) => {
-        return total + venta.cantidad;
+        return total + (Number(venta.cantidad) || 0);
     }, 0);
 }
 
+// VENTAS POR CIUDAD (FILTER + REDUCE)
 function ventasPorCiudadM(ventas, ciudad) {
-
     const ciudadBuscada = ciudad.trim().toLowerCase();
 
     return ventas
-        .filter(venta => {
-            return venta.ciudad.trim().toLowerCase() === ciudadBuscada;
-        })
+        .filter(venta => venta.ciudad.trim().toLowerCase() === ciudadBuscada)
         .reduce((total, venta) => {
-            return total + (venta.cantidad * venta.precio);
+            const valor = valorVenta(venta);
+            return valor === null ? total : total + valor;
         }, 0);
 }
 
+// TOTAL VENDIDO POR CIUDAD (REDUCE)
 function totalPorCiudad(ventas) {
-
     return ventas.reduce((acumulador, venta) => {
-
         const ciudad = venta.ciudad.trim().toLowerCase();
+        const valor = valorVenta(venta);
 
-        const total = venta.cantidad * venta.precio;
-
-        if (!acumulador[ciudad]) {
+        if (!Object.prototype.hasOwnProperty.call(acumulador, ciudad)) {
             acumulador[ciudad] = 0;
         }
 
-        acumulador[ciudad] += total;
+        if (valor !== null) {
+            acumulador[ciudad] += valor;
+        }
 
         return acumulador;
-
     }, {});
 }
 
+// UNIDADES VENDIDAS POR PRODUCTO (REDUCE)
 function unidadesPorProducto(ventas) {
-
     return ventas.reduce((acumulador, venta) => {
-
         const producto = venta.producto.trim();
 
-        if (!acumulador[producto]) {
+        if (!Object.prototype.hasOwnProperty.call(acumulador, producto)) {
             acumulador[producto] = 0;
         }
 
-        acumulador[producto] += venta.cantidad;
-
+        acumulador[producto] += Number(venta.cantidad) || 0;
         return acumulador;
-
     }, {});
 }
 
+// TOP K PRODUCTOS POR VALOR (REDUCE + MAP + SORT)
 function topProductosPorValor(ventas, k) {
-
     const productos = ventas.reduce((acumulador, venta) => {
-
         const producto = venta.producto.trim();
+        const valor = valorVenta(venta);
 
-        const total = venta.cantidad * venta.precio;
-
-        if (!acumulador[producto]) {
+        if (!Object.prototype.hasOwnProperty.call(acumulador, producto)) {
             acumulador[producto] = 0;
         }
 
-        acumulador[producto] += total;
+        if (valor !== null) {
+            acumulador[producto] += valor;
+        }
 
         return acumulador;
-
     }, {});
 
     const ranking = Object.entries(productos).map(([producto, total]) => {
@@ -159,50 +187,46 @@ function topProductosPorValor(ventas, k) {
         };
     });
 
-    return [...ranking]
+    const cantidad = Math.max(0, Math.floor(Number(k) || 0));
+
+    return ranking
         .sort((a, b) => b.total - a.total)
-        .slice(0, Math.max(0, k));
+        .slice(0, cantidad);
 }
 
+// RESUMEN DE VENTAS DE UN DÍA
 function ventasDelDia(ventas, fecha) {
+    const ventasFecha = ventas.filter(venta => venta.fecha === fecha);
 
-    const ventasFecha = ventas.filter(venta => {
-        return venta.fecha === fecha;
-    });
+    const total = totalVendido(ventasFecha);
+    const unidades = unidadesVendidas(ventasFecha);
 
-    const total = ventasFecha.reduce((acumulador, venta) => {
-        return acumulador + venta.cantidad * (Number(venta.precio) || 0);
-    }, 0);
-
-    const unidades = ventasFecha.reduce((acumulador, venta) => {
-        return acumulador + venta.cantidad;
-    }, 0);
-
-    const ticketPromedio = ventasFecha.length > 0
-        ? total / ventasFecha.length
+    // El promedio solo incluye ventas con precio registrado.
+    const ventasConPrecio = ventasFecha.filter(venta => valorVenta(venta) !== null);
+    const promedio = ventasConPrecio.length > 0
+        ? total / ventasConPrecio.length
         : 0;
 
     return {
         fecha: fecha,
         cantidadVentas: ventasFecha.length,
+        ventasConPrecio: ventasConPrecio.length,
         unidades: unidades,
         total: total,
-        ticketPromedio: ticketPromedio
+        ticketPromedio: promedio
     };
 }
 
-
-
-
+// ============================================================
 // EXPORTAR FUNCIONES
-
+// ============================================================
 module.exports = {
     valorVenta,
     totalVendido,
     unidadesVendidas,
-    ventasPorCiudad,
     ventaMayor,
     ticketPromedio,
+    ventasPorCiudad,
     totalVendidoM,
     unidadesVendidasM,
     ventasPorCiudadM,
@@ -211,4 +235,3 @@ module.exports = {
     topProductosPorValor,
     ventasDelDia
 };
-

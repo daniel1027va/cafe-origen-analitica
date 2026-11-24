@@ -1,3 +1,8 @@
+// ============================================================
+// VERIFICACIÓN - CAFÉ ORIGEN
+// Compara los resultados obtenidos con ciclos y métodos.
+// ============================================================
+
 const ventas = require("./datos");
 
 const {
@@ -15,11 +20,8 @@ const {
     topProductosPorValor
 } = require("./analitica");
 
-
 // FUNCIÓN PARA COMPARAR RESULTADOS
-
 function verificar(nombre, resultadoCiclo, resultadoMetodo) {
-
     if (resultadoCiclo === resultadoMetodo) {
         console.log(nombre + ": OK");
     } else {
@@ -30,6 +32,7 @@ function verificar(nombre, resultadoCiclo, resultadoMetodo) {
 }
 
 // COMPARACIÓN DE INDICADORES
+console.log("===== COMPARACIÓN DE INDICADORES =====");
 
 verificar(
     "Total vendido",
@@ -44,10 +47,7 @@ verificar(
 );
 
 // COMPARACIÓN POR CIUDAD
-
-const ciudadPrueba = ventas.length > 0
-    ? ventas[0].ciudad
-    : "Bogotá";
+const ciudadPrueba = ventas.length > 0 ? ventas[0].ciudad : "Bogotá";
 
 verificar(
     "Ventas por ciudad",
@@ -56,7 +56,6 @@ verificar(
 );
 
 // NUEVOS INDICADORES
-
 console.log("\n===== NUEVOS INDICADORES =====");
 
 console.log("\nTotal vendido por ciudad:");
